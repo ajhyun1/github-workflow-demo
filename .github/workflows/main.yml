@@ -1,0 +1,34 @@
+name: Update Workflow
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      # Step 1: Check out the repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Step 2: Update index.html only for my GitHub username
+      - name: Update HTML
+        if: github.actor == 'ajhyun1'
+        run: sed -i "/<\/body>/i <p>Updated by ${{ github.actor }} on $(date)</p>" index.html
+
+      # Step 3: Log the update in the README
+      - name: Update README
+        run: echo "### Updated by ${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S') [Commit: $(git rev-parse --short HEAD)]" >> README.md
+
+      # Step 4: Commit the changes back to the repository
+      - name: Commit and Push Changes
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add .
+          git commit -m "Workflow: Updated HTML and README for ${{ github.actor }}" || echo "No changes to commit"
+          git push origin main
