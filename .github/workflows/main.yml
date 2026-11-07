@@ -18,11 +18,13 @@ jobs:
       # Step 2: Update index.html only for my GitHub username
       - name: Update HTML
         if: github.actor == 'ajhyun1'
-        run: sed -i "/<\/body>/i <p>Updated by ${{ github.actor }} on $(date)</p>" index.html
+        run: |
+          sed -i "/<\/body>/i <p>Updated by ${{ github.actor }} on $(date)</p>" index.html
 
       # Step 3: Log the update in the README
       - name: Update README
-        run: echo "### Updated by ${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S') [Commit: $(git rev-parse --short HEAD)]" >> README.md
+        run: |
+          echo "### Updated by ${{ github.actor }} on $(date '+%Y-%m-%d %H:%M:%S') [Commit: $(git rev-parse --short HEAD)]" >> README.md
 
       # Step 4: Commit the changes back to the repository
       - name: Commit and Push Changes
